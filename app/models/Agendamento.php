@@ -1,5 +1,9 @@
 <?php
 // app/models/Agendamento.php
+/**
+ * Model `Agendamento` — operações CRUD para agendamentos.
+ * Inclui métodos para listar todos (com JOINs para mostrar nomes) e listar por usuário.
+ */
 class Agendamento {
     private $conn;
     private $table = "agendamentos";
@@ -11,10 +15,17 @@ class Agendamento {
     public $horario;
     public $observacao;
 
+    /**
+     * Recebe conexão PDO.
+     */
     public function __construct($db) {
         $this->conn = $db;
     }
 
+    /**
+     * Insere um novo agendamento.
+     * @return bool
+     */
     public function create() {
         $sql = "INSERT INTO {$this->table}
                 (usuario_id, servico_id, data_agendamento, horario, observacao)
@@ -28,7 +39,12 @@ class Agendamento {
         return $stmt->execute();
     }
 
-    // Lista todos (admin) com JOIN para mostrar nomes
+    /**
+     * Lista todos os agendamentos (visão admin) com JOINs para exibir cliente e serviço.
+     * Aceita um filtro por data (opcional).
+     * @param string|null $filtroData
+     * @return array
+     */
     public function read($filtroData = null) {
         $sql = "SELECT a.*, u.nome AS cliente, s.nome_servico AS servico, s.preco
                 FROM {$this->table} a
@@ -46,7 +62,11 @@ class Agendamento {
         return $stmt->fetchAll();
     }
 
-    // Lista agendamentos de um cliente específico
+    /**
+     * Lista agendamentos de um determinado usuário (cliente).
+     * @param int $usuario_id
+     * @return array
+     */
     public function readByUsuario($usuario_id) {
         $sql = "SELECT a.*, s.nome_servico AS servico, s.preco
                 FROM {$this->table} a
@@ -59,6 +79,11 @@ class Agendamento {
         return $stmt->fetchAll();
     }
 
+    /**
+     * Busca um agendamento por id.
+     * @param int $id
+     * @return array|false
+     */
     public function findById($id) {
         $sql = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($sql);
@@ -67,6 +92,10 @@ class Agendamento {
         return $stmt->fetch();
     }
 
+    /**
+     * Atualiza um agendamento existente.
+     * @return bool
+     */
     public function update() {
         $sql = "UPDATE {$this->table}
                 SET servico_id=:sid, data_agendamento=:data,
@@ -81,6 +110,11 @@ class Agendamento {
         return $stmt->execute();
     }
 
+    /**
+     * Deleta um agendamento por id.
+     * @param int $id
+     * @return bool
+     */
     public function delete($id) {
         $sql = "DELETE FROM {$this->table} WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
@@ -88,6 +122,10 @@ class Agendamento {
         return $stmt->execute();
     }
 
+    /**
+     * Retorna a contagem total de agendamentos.
+     * @return int
+     */
     public function count() {
         $stmt = $this->conn->query("SELECT COUNT(*) AS total FROM {$this->table}");
         return $stmt->fetch()['total'];

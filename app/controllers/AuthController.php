@@ -2,21 +2,36 @@
 // app/controllers/AuthController.php
 require_once __DIR__ . '/../models/Usuario.php';
 
+/**
+ * Controller de autenticação: login, cadastro e logout.
+ * Trabalha com o model `Usuario` para verificar credenciais e criar contas.
+ */
 class AuthController {
     private $db;
     private $usuario;
 
+    /**
+     * Inicializa o controller com a conexão PDO e model de usuário.
+     * @param PDO $db
+     */
     public function __construct($db) {
         $this->db = $db;
         $this->usuario = new Usuario($db);
     }
 
-    // Tela de login
+    /**
+     * Exibe a tela de login (view simples).
+     */
     public function loginForm() {
         require __DIR__ . '/../views/auth/login.php';
     }
 
-    // Processa o login
+    /**
+     * Processa o POST de login:
+     * - valida presença de email/senha
+     * - busca usuário pelo email e verifica senha com password_verify
+     * - grava dados do usuário em `$_SESSION['user']` e redireciona
+     */
     public function login() {
         $email = trim($_POST['email'] ?? '');
         $senha = $_POST['senha'] ?? '';
@@ -44,17 +59,23 @@ class AuthController {
             exit;
         }
 
+        // Falha de autenticação
         $_SESSION['erro'] = "Email ou senha inválidos.";
         header("Location: index.php?action=loginForm");
         exit;
     }
 
-    // Tela de cadastro (cliente)
+    /**
+     * Exibe o formulário de cadastro de cliente.
+     */
     public function cadastroForm() {
         require __DIR__ . '/../views/auth/cadastro.php';
     }
 
-    // Processa cadastro de cliente
+    /**
+     * Processa o POST de cadastro de cliente:
+     * - valida campos, evita email duplicado e usa o model para criar a conta
+     */
     public function cadastro() {
         $nome  = trim($_POST['nome']  ?? '');
         $email = trim($_POST['email'] ?? '');
@@ -87,6 +108,9 @@ class AuthController {
         exit;
     }
 
+    /**
+     * Logout — encerra a sessão e redireciona para a tela de login.
+     */
     public function logout() {
         session_destroy();
         header("Location: index.php?action=loginForm");

@@ -2,26 +2,43 @@
 // app/controllers/UsuarioController.php
 require_once __DIR__ . '/../models/Usuario.php';
 
+/**
+ * Controller para gerenciar usuários (admin only).
+ * Permite listar, criar, editar e excluir usuários via model `Usuario`.
+ */
 class UsuarioController {
     private $db;
     private $usuario;
 
+    /**
+     * Recebe conexão PDO e instancia o model `Usuario`.
+     */
     public function __construct($db) {
         $this->db = $db;
         $this->usuario = new Usuario($db);
     }
 
+    /**
+     * Lista todos os usuários (visão administrativa).
+     */
     public function index() {
         Auth::requireAdmin();
         $usuarios = $this->usuario->read();
         require __DIR__ . '/../views/admin/usuarios/index.php';
     }
 
+    /**
+     * Exibe formulário para criar um novo usuário.
+     */
     public function createForm() {
         Auth::requireAdmin();
         require __DIR__ . '/../views/admin/usuarios/create.php';
     }
 
+    /**
+     * Recebe POST e cria novo usuário:
+     * - valida campos obrigatórios e email duplicado
+     */
     public function store() {
         Auth::requireAdmin();
         $this->usuario->nome  = trim($_POST['nome']  ?? '');
@@ -45,6 +62,9 @@ class UsuarioController {
         exit;
     }
 
+    /**
+     * Exibe formulário de edição carregando usuário por id.
+     */
     public function editForm() {
         Auth::requireAdmin();
         $id = intval($_GET['id'] ?? 0);
@@ -53,6 +73,9 @@ class UsuarioController {
         require __DIR__ . '/../views/admin/usuarios/edit.php';
     }
 
+    /**
+     * Atualiza usuário com dados do POST. Se senha estiver vazia, não a altera.
+     */
     public function update() {
         Auth::requireAdmin();
         $this->usuario->id    = intval($_POST['id'] ?? 0);
@@ -66,6 +89,9 @@ class UsuarioController {
         exit;
     }
 
+    /**
+     * Exclui um usuário pelo id. Impede que o admin exclua a si mesmo.
+     */
     public function delete() {
         Auth::requireAdmin();
         $id = intval($_GET['id'] ?? 0);
