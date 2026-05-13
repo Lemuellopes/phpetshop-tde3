@@ -1,5 +1,5 @@
 <?php
-// public/index.php - Front Controller (única porta de entrada)
+// Front Controller - única porta de entrada
 session_start();
 
 require_once __DIR__ . '/../config/database.php';
@@ -28,32 +28,28 @@ class Auth {
     }
 }
 
-// Conexão
+// Conexão com banco
 $db = (new Database())->connect();
 
 // Mapa de ações -> [Controller, método]
 // (substitui o "arquivo de rotas" mantendo tudo simples e em um lugar só)
 $action = $_GET['action'] ?? 'loginForm';
 
+// Mapa de ações -> [Controller, método]
 $map = [
-    // Auth
     'loginForm'         => [AuthController::class,        'loginForm'],
     'login'             => [AuthController::class,        'login'],
     'cadastroForm'      => [AuthController::class,        'cadastroForm'],
     'cadastro'          => [AuthController::class,        'cadastro'],
     'logout'            => [AuthController::class,        'logout'],
-    // Dashboard
     'dashboard'         => [DashboardController::class,   'index'],
-    // Serviços (admin)
     'servicos'          => [ServicoController::class,     'index'],
     'servicoCreate'     => [ServicoController::class,     'createForm'],
     'servicoStore'      => [ServicoController::class,     'store'],
     'servicoEdit'       => [ServicoController::class,     'editForm'],
     'servicoUpdate'     => [ServicoController::class,     'update'],
     'servicoDelete'     => [ServicoController::class,     'delete'],
-    // Serviços (cliente)
     'servicosCliente'   => [ServicoController::class,     'listarCliente'],
-    // Agendamentos
     'agendamentos'      => [AgendamentoController::class, 'index'],
     'meusAgendamentos'  => [AgendamentoController::class, 'meus'],
     'agendamentoCreate' => [AgendamentoController::class, 'createForm'],
@@ -61,7 +57,6 @@ $map = [
     'agendamentoEdit'   => [AgendamentoController::class, 'editForm'],
     'agendamentoUpdate' => [AgendamentoController::class, 'update'],
     'agendamentoDelete' => [AgendamentoController::class, 'delete'],
-    // Usuários (admin)
     'usuarios'          => [UsuarioController::class,     'index'],
     'usuarioCreate'     => [UsuarioController::class,     'createForm'],
     'usuarioStore'      => [UsuarioController::class,     'store'],

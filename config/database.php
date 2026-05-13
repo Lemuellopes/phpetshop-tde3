@@ -1,6 +1,5 @@
 <?php
-// config/database.php
-// Classe responsável pela conexão com o banco usando PDO
+// Conexão PDO com MySQL
 class Database {
     private $host   = "localhost";
     private $dbname = "petshop";

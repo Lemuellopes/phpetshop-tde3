@@ -1,5 +1,5 @@
 <?php
-// app/controllers/AgendamentoController.php
+// Controller de agendamentos
 require_once __DIR__ . '/../models/Agendamento.php';
 require_once __DIR__ . '/../models/Servico.php';
 
@@ -12,19 +12,13 @@ class AgendamentoController {
     private $db;
     private $agendamento;
 
-    /**
-     * Construtor recebe a conexão PDO e inicializa o model de Agendamento.
-     * @param PDO $db Conexão com o banco
-     */
+    // Inicializa com PDO
     public function __construct($db) {
         $this->db = $db;
         $this->agendamento = new Agendamento($db);
     }
 
-    /**
-     * Lista todos os agendamentos (visão do admin).
-     * Lê possível filtro por data via GET['data'] e carrega a view administrativa.
-     */
+    // Lista todos agendamentos (admin)
     public function index() {
         Auth::requireAdmin();
         $filtro = $_GET['data'] ?? null;
@@ -32,20 +26,14 @@ class AgendamentoController {
         require __DIR__ . '/../views/admin/agendamentos/index.php';
     }
 
-    /**
-     * Mostra os agendamentos do usuário logado (cliente).
-     * Exige autenticação e passa os dados para a view de cliente.
-     */
+    // Lista agendamentos do usuário logado
     public function meus() {
         Auth::requireLogin();
         $agendamentos = $this->agendamento->readByUsuario($_SESSION['user']['id']);
         require __DIR__ . '/../views/cliente/agendamentos/index.php';
     }
 
-    /**
-     * Exibe o formulário de criação de agendamento para cliente.
-     * Carrega lista de serviços disponíveis e um possível `servico_id` via GET.
-     */
+    // Exibe formulário de criação
     public function createForm() {
         Auth::requireLogin();
         $servicoModel = new Servico($this->db);
@@ -54,12 +42,7 @@ class AgendamentoController {
         require __DIR__ . '/../views/cliente/agendamentos/create.php';
     }
 
-    /**
-     * Recebe POST do formulário e cria um novo agendamento.
-     * - valida campos obrigatórios
-     * - grava usando o model `Agendamento`
-     * - configura mensagem flash e redireciona para "meus agendamentos"
-     */
+    // Cria novo agendamento
     public function store() {
         Auth::requireLogin();
         $this->agendamento->usuario_id       = $_SESSION['user']['id'];
@@ -80,17 +63,12 @@ class AgendamentoController {
         exit;
     }
 
-    /**
-     * Exibe o formulário de edição de agendamento.
-     * - garante que o agendamento exista
-     * - só permite o dono do agendamento ou admin editá-lo
-     */
+    // Exibe formulário de edição
     public function editForm() {
         Auth::requireLogin();
         $id = intval($_GET['id'] ?? 0);
         $ag = $this->agendamento->findById($id);
         if (!$ag) { header("Location: index.php?action=meusAgendamentos"); exit; }
-        // Apenas dono ou admin
         if ($_SESSION['user']['tipo'] !== 'admin' && $ag['usuario_id'] != $_SESSION['user']['id']) {
             header("Location: index.php?action=meusAgendamentos"); exit;
         }
@@ -99,11 +77,7 @@ class AgendamentoController {
         require __DIR__ . '/../views/cliente/agendamentos/edit.php';
     }
 
-    /**
-     * Atualiza um agendamento existente com dados vindos do POST.
-     * - valida existência e permissão (dono ou admin)
-     * - grava via model e redireciona para vista adequada
-     */
+    // Atualiza agendamento
     public function update() {
         Auth::requireLogin();
         $id = intval($_POST['id'] ?? 0);
@@ -124,10 +98,7 @@ class AgendamentoController {
         exit;
     }
 
-    /**
-     * Remove um agendamento (admin ou dono podem apagar).
-     * - busca o registro e, se autorizado, deleta via model
-     */
+    // Deleta agendamento
     public function delete() {
         Auth::requireLogin();
         $id = intval($_GET['id'] ?? 0);

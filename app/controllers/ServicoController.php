@@ -1,53 +1,38 @@
 <?php
-// app/controllers/ServicoController.php
+// Controller CRUD de serviços
 require_once __DIR__ . '/../models/Servico.php';
 
-/**
- * Controller para operações CRUD de serviços.
- * Usado tanto pelo admin (gerenciar serviços) quanto pelo cliente (listar)
- */
 class ServicoController {
     private $db;
     private $servico;
 
-    /**
-     * Recebe conexão PDO e instancia o model `Servico`.
-     */
+    // Inicializa com PDO
     public function __construct($db) {
         $this->db = $db;
         $this->servico = new Servico($db);
     }
 
-    /**
-     * Lista serviços para administrador (view admin).
-     */
+    // Lista serviços para admin
     public function index() {
         Auth::requireAdmin();
         $servicos = $this->servico->read();
         require __DIR__ . '/../views/admin/servicos/index.php';
     }
 
-    /**
-     * Lista serviços para cliente (view cliente).
-     */
+    // Lista serviços para cliente
     public function listarCliente() {
         Auth::requireLogin();
         $servicos = $this->servico->read();
         require __DIR__ . '/../views/cliente/servicos/index.php';
     }
 
-    /**
-     * Exibe formulário de criação de serviço (apenas admin).
-     */
+    // Exibe formulário de criação
     public function createForm() {
         Auth::requireAdmin();
         require __DIR__ . '/../views/admin/servicos/create.php';
     }
 
-    /**
-     * Recebe POST e cria novo serviço.
-     * - valida nome e delega ao model
-     */
+    // Cria novo serviço
     public function store() {
         Auth::requireAdmin();
         $this->servico->nome_servico = trim($_POST['nome_servico'] ?? '');
@@ -66,9 +51,7 @@ class ServicoController {
         exit;
     }
 
-    /**
-     * Exibe formulário de edição, carregando o serviço pelo id.
-     */
+    // Exibe formulário de edição
     public function editForm() {
         Auth::requireAdmin();
         $id = intval($_GET['id'] ?? 0);
@@ -77,9 +60,7 @@ class ServicoController {
         require __DIR__ . '/../views/admin/servicos/edit.php';
     }
 
-    /**
-     * Atualiza serviço com dados do POST.
-     */
+    // Atualiza serviço
     public function update() {
         Auth::requireAdmin();
         $this->servico->id           = intval($_POST['id'] ?? 0);
@@ -92,9 +73,7 @@ class ServicoController {
         exit;
     }
 
-    /**
-     * Deleta um serviço (apenas admin).
-     */
+    // Deleta serviço
     public function delete() {
         Auth::requireAdmin();
         $id = intval($_GET['id'] ?? 0);

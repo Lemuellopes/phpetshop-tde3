@@ -1,9 +1,5 @@
 <?php
-// app/models/Usuario.php
-/**
- * Model `Usuario` — encapsula operações na tabela `usuarios`.
- * Campos públicos representam os atributos usados pelos controllers.
- */
+// Model de usuários - operações na tabela usuarios
 class Usuario {
     private $conn;
     private $table = "usuarios";
@@ -14,25 +10,17 @@ class Usuario {
     public $senha;
     public $tipo; // 'admin' ou 'cliente'
 
-    /**
-     * Recebe conexão PDO no construtor.
-     * @param PDO $db
-     */
+    // Inicializa com PDO
     public function __construct($db) {
         $this->conn = $db;
     }
 
-    /**
-     * CREATE - cadastra novo usuário.
-     * - faz hash seguro da senha antes de salvar
-     * @return bool sucesso da operação
-     */
+    // Cadastra novo usuário (com hash da senha)
     public function create() {
         $sql = "INSERT INTO {$this->table} (nome, email, senha, tipo)
                 VALUES (:nome, :email, :senha, :tipo)";
         $stmt = $this->conn->prepare($sql);
 
-        // Hash seguro da senha
         $senhaHash = password_hash($this->senha, PASSWORD_BCRYPT);
 
         $stmt->bindParam(":nome",  $this->nome);
@@ -43,10 +31,7 @@ class Usuario {
         return $stmt->execute();
     }
 
-    /**
-     * READ - lista todos os usuários (sem a senha)
-     * @return array lista de usuários
-     */
+    // Lista todos os usuários
     public function read() {
         $sql = "SELECT id, nome, email, tipo FROM {$this->table} ORDER BY id DESC";
         $stmt = $this->conn->prepare($sql);
@@ -54,11 +39,7 @@ class Usuario {
         return $stmt->fetchAll();
     }
 
-    /**
-     * Busca um usuário por id (retorna todos os campos, inclusive senha hash).
-     * @param int $id
-     * @return array|false registro do usuário ou false
-     */
+    // Busca usuário por id
     public function findById($id) {
         $sql = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($sql);
@@ -67,11 +48,7 @@ class Usuario {
         return $stmt->fetch();
     }
 
-    /**
-     * Busca por email — usado no processo de login.
-     * @param string $email
-     * @return array|false registro do usuário ou false
-     */
+    // Busca por email
     public function findByEmail($email) {
         $sql = "SELECT * FROM {$this->table} WHERE email = :email LIMIT 1";
         $stmt = $this->conn->prepare($sql);
@@ -80,11 +57,7 @@ class Usuario {
         return $stmt->fetch();
     }
 
-    /**
-     * UPDATE - atualiza usuário.
-     * - se `$this->senha` estiver vazia, a senha não é alterada
-     * @return bool sucesso da operação
-     */
+    // Atualiza usuário (senha opcional)
     public function update() {
         // Atualiza senha somente se informada
         if (!empty($this->senha)) {
@@ -107,11 +80,7 @@ class Usuario {
         return $stmt->execute();
     }
 
-    /**
-     * DELETE - remove usuário por id.
-     * @param int $id
-     * @return bool
-     */
+    // Deleta usuário
     public function delete($id) {
         $sql = "DELETE FROM {$this->table} WHERE id = :id";
         $stmt = $this->conn->prepare($sql);

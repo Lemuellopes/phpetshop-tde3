@@ -1,5 +1,5 @@
 <?php
-// app/controllers/DashboardController.php
+// Dashboard administrativo - mostra totais
 require_once __DIR__ . '/../models/Usuario.php';
 require_once __DIR__ . '/../models/Servico.php';
 require_once __DIR__ . '/../models/Agendamento.php';
@@ -11,9 +11,7 @@ require_once __DIR__ . '/../models/Agendamento.php';
 class DashboardController {
     private $db;
 
-    /**
-     * Recebe conexão PDO no construtor.
-     */
+    // Inicializa
     public function __construct($db) { $this->db = $db; }
 
     /**

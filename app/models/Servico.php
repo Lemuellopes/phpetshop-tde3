@@ -1,8 +1,5 @@
 <?php
-// app/models/Servico.php
-/**
- * Model `Servico` — encapsula operações CRUD na tabela `servicos`.
- */
+// Model de serviços - operações CRUD
 class Servico {
     private $conn;
     private $table = "servicos";
@@ -12,17 +9,12 @@ class Servico {
     public $descricao;
     public $preco;
 
-    /**
-     * Recebe conexão PDO.
-     */
+    // Inicializa com PDO
     public function __construct($db) {
         $this->conn = $db;
     }
 
-    /**
-     * Insere um novo serviço no banco.
-     * @return bool
-     */
+    // Insere novo serviço
     public function create() {
         $sql = "INSERT INTO {$this->table} (nome_servico, descricao, preco)
                 VALUES (:nome, :desc, :preco)";
@@ -33,10 +25,7 @@ class Servico {
         return $stmt->execute();
     }
 
-    /**
-     * Retorna todos os serviços ordenados por nome.
-     * @return array
-     */
+    // Lista todos os serviços
     public function read() {
         $sql = "SELECT * FROM {$this->table} ORDER BY nome_servico ASC";
         $stmt = $this->conn->prepare($sql);
@@ -44,11 +33,7 @@ class Servico {
         return $stmt->fetchAll();
     }
 
-    /**
-     * Busca um serviço por id.
-     * @param int $id
-     * @return array|false
-     */
+    // Busca serviço por id
     public function findById($id) {
         $sql = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($sql);
@@ -57,10 +42,7 @@ class Servico {
         return $stmt->fetch();
     }
 
-    /**
-     * Atualiza um serviço existente.
-     * @return bool
-     */
+    // Atualiza serviço
     public function update() {
         $sql = "UPDATE {$this->table}
                 SET nome_servico=:nome, descricao=:desc, preco=:preco
@@ -73,11 +55,7 @@ class Servico {
         return $stmt->execute();
     }
 
-    /**
-     * Deleta um serviço por id.
-     * @param int $id
-     * @return bool
-     */
+    // Deleta serviço
     public function delete($id) {
         $sql = "DELETE FROM {$this->table} WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
