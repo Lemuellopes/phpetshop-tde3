@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
+  <title>Elefante azul</title>
+  <g>
+    <path d="M10 40c0-6 4-10 10-10h2v-4c0-5 4-9 9-9 4 0 7 2 9 5 2 3 5 5 9 5 3 0 6 2 6 5v2c0 4-3 7-7 7h-2c-1 0-2 1-2 2v6c0 3-3 5-6 5H24c-6 0-10-5-10-11v-6z" fill="#777BB3" />
+    <circle cx="46" cy="34" r="2" fill="#FFFFFF" />
+    <path d="M14 30c-2 0-4-2-4-4s2-4 4-4 4 2 4 4-2 4-4 4z" fill="#777BB3" opacity="0.0"/>
+    <path d="M22 36c0 0 4-2 6-2s4 2 4 2" fill="none" stroke="#4F5B93" stroke-width="1" stroke-linecap="round"/>
+  </g>
+</svg>
